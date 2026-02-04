@@ -30,15 +30,22 @@ class SupplyController extends Controller
     {
         $request->validate([
             'name' => 'required',
+            'quantity' => 'required|integer',
             'unit' => 'required',
             'reorder_level' => 'required|integer',
-            'quantity' => 'required|integer'
+            // category and description are optional, so we don't need 'required' here
         ]);
 
-        Supply::create($request->all());
+        Supply::create([
+            'name' => $request->name,
+            'category' => $request->category,        // <--- NEW LINE
+            'description' => $request->description,  // <--- NEW LINE
+            'quantity' => $request->quantity,
+            'unit' => $request->unit,
+            'reorder_level' => $request->reorder_level
+        ]);
 
-        return redirect()->route('supplies.index')
-                         ->with('success', 'New supply item added successfully!');
+        return redirect()->route('supplies.index')->with('success', 'Item added successfully!');
     }
     public function restock(Request $request, $id)
     {
